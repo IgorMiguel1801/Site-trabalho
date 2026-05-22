@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalização do Pagamento | Survivors Tech</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="pagamento.css">
+
+    <style>
+        /* CSS INLINE - (MELHOR COLOCAR NO pagamento.css) */
+        .pix-status-message {
+            text-align: center;
+            padding: 15px;
+            border: 1px dashed var(--verde-destaque);
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .pix-status-message h4 {
+            color: var(--verde-destaque);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 5px;
+        }
+        .pix-status-message p {
+            color: var(--cor-texto-secundario, #b0b0b0);
+            font-size: 0.95em;
+            }
+        .pix-status-message .fas {
+            font-size: 2em;
+            margin-top: 10px;
+            color: var(--roxo-principal);
+        }
+
+        #input-codigo-pix {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: #12081d;
+        }
+
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-control.is-invalid {
+            border: 1px solid #ff4136 !important;
+            box-shadow: 0 0 5px rgba(255, 65, 54, 0.5);
+        }
+        .invalid-feedback {
+            display: none;
+            color: #ff4136;
+            font-size: 0.8em;
+            margin-top: 5px;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .form-group.has-error .invalid-feedback { display: block; }
+
+        #mensagem-final {
+            padding: 20px;
+            background: #150b22;
+            border: 1px solid #7b3ff2;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            margin: 40px auto;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+
+<body class="checkout-page">
+
+    <button id="btn-voltar" onclick="voltarParaCarrinho()">
+        <i class="fas fa-arrow-left"></i> Voltar para o Carrinho
+    </button>
+
+    <main id="container-pagamento">
+
+        <h1>Finalizar Compra</h1>
+
+        <section id="resumo-carrinho">
+            <h2>Resumo do Pedido</h2>
+
+            <table id="tabela-itens">
+                <thead>
+                    <tr>
+                        <th class="item-nome">Item</th>
+                        <th class="item-preco">Preço</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-itens"></tbody>
+                <tfoot>
+                    <tr class="linha-frete">
+                         <td>Frete:</td>
+                         <td><span id="valor-frete">R$ 20,00</span></td> </tr>
+                    <tr class="total">
+                        <td><strong>Total a Pagar:</strong></td>
+                        <td><span id="valor-total">R$ 0,00</span></td> </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <section id="metodos-pagamento">
+            <h2>Método de Pagamento</h2>
+
+            <fieldset class="grupo-metodos">
+                <legend class="sr-only">Escolha o método</legend>
+
+                <div class="opcao-pagamento">
+                    <input type="radio" id="pix" name="metodo" value="pix" onclick="exibirOpcao('pix')">
+                    <label for="pix"><i class="fas fa-qrcode"></i> PIX</label>
+                </div>
+
+                <div class="opcao-pagamento">
+                    <input type="radio" id="cartao" name="metodo" value="cartao" onclick="exibirOpcao('cartao')">
+                    <label for="cartao"><i class="fas fa-credit-card"></i> Cartão</label>
+                </div>
+            </fieldset>
+
+            <div id="detalhes-pix" class="detalhes-pagamento" style="display:none;">
+                <div id="pix-formulario">
+                    <p>Copie o código abaixo para pagar:</p>
+                    <input type="text" id="input-codigo-pix" value="PIX_CODIGO_EXEMPLO_PARA_TESTE" readonly> 
+                    <button class="botao-acao" onclick="copiarPix()">
+                        <i class="fas fa-copy"></i> Copiar Código
+                    </button>
+                </div>
+
+                <div id="pix-aguardando" class="pix-status-message" style="display:none;">
+                    <h4>Aguardando Confirmação</h4>
+                    <p>Sua compra já foi finalizada. Assim que o PIX compensar, avisamos.</p>
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+            </div>
+
+            <div id="detalhes-cartao" class="detalhes-pagamento" style="display:none;">
+                <form id="form-cartao" novalidate>
+                    <div class="form-group">
+                        <label for="numero-cartao">Número do Cartão:</label>
+                        <input type="tel" id="numero-cartao" class="form-control" placeholder="0000 0000 0000 0000" required pattern="[0-9 ]{16,19}" maxlength="19">
+                        <div class="invalid-feedback">O número do cartão deve ter 16 dígitos.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nome-cartao">Nome no Cartão:</label>
+                        <input type="text" id="nome-cartao" class="form-control" required pattern="[A-Za-z\s]{3,}" maxlength="50">
+                        <div class="invalid-feedback">Preencha o nome como está no cartão.</div>
+                    </div>
+
+                    <div class="linha-cartao">
+                        <div class="form-group">
+                            <label for="validade">Validade (MM/AA):</label>
+                            <input type="text" id="validade" class="form-control" placeholder="MM/AA" required pattern="(0[1-9]|1[0-2])\/([0-9]{2})" maxlength="5">
+                            <div class="invalid-feedback">Validade inválida.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cvv">CVV:</label>
+                            <input type="text" id="cvv" class="form-control" placeholder="123" required pattern="[0-9]{3,4}" maxlength="4">
+                            <div class="invalid-feedback">CVV inválido.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <button id="btn-finalizar" class="botao-acao" style="display:none;">FINALIZAR PAGAMENTO</button>
+
+        </section>
+    </main>
+
+<div id="mensagem-final" style="display:none;">
+    <h2 id="titulo-final"></h2>
+    <p id="texto-final"></p>
+    <button class="botao-acao" onclick="redirecionarAposSucesso()">Voltar para a Loja</button>
+</div>
+
+<script>
+    // Valor do Frete (precisa ser o mesmo do carrinho)
+    const FRETE_TAXA = 20.00; 
+
+document.addEventListener('DOMContentLoaded', () => {
+    carregarCarrinho();
+    document.getElementById('btn-finalizar').addEventListener('click', finalizarPagamento);
+});
+
+function voltarParaCarrinho() { 
+    window.location.href = 'carrinho.html'; 
+}
+
+function exibirOpcao(metodo) {
+    const pix = document.getElementById("detalhes-pix");
+    const cartao = document.getElementById("detalhes-cartao");
+    const btn = document.getElementById("btn-finalizar");
+    
+    pix.style.display = "none";
+    cartao.style.display = "none";
+    btn.style.display = "none";
+
+    // Limpa classes de erro ao mudar de opção
+    document.querySelectorAll('.form-group').forEach(group => group.classList.remove('has-error'));
+
+    if (metodo === "pix") {
+        pix.style.display = "block";
+        document.getElementById("pix-aguardando").style.display = "none";
+        document.getElementById("pix-formulario").style.display = "block";
+        btn.style.display = "block";
+    }
+
+    if (metodo === "cartao") {
+        cartao.style.display = "block";
+        btn.style.display = "block";
+    }
+}
+
+function copiarPix() {
+    const input = document.getElementById("input-codigo-pix");
+    input.select();
+    input.setSelectionRange(0, 99999); 
+    navigator.clipboard.writeText(input.value)
+        .catch(err => {
+            console.error('Erro ao copiar: ', err);
+        });
+}
+
+function carregarCarrinho() {
+    const lista = document.getElementById("lista-itens");
+    const totalSpan = document.getElementById("valor-total");
+    const freteSpan = document.getElementById("valor-frete"); // Novo elemento no HTML
+
+    // CORREÇÃO AQUI: LER O VALOR TOTAL DO LOCALSTORAGE SALVO PELO CARRINHO
+    const totalComFrete = localStorage.getItem("totalCompra"); 
+    
+    // CORREÇÃO: Lê os itens da nova chave (salva no carrinho.html)
+    const itens = JSON.parse(localStorage.getItem("carrinhoPagamento")) || [];
+
+    // Calcula o subtotal para exibir os itens (apenas por segurança)
+    let subtotalItens = itens.reduce((acc, item) => acc + (parseFloat(item.preco) * parseInt(item.quantidade)), 0);
+
+    lista.innerHTML = "";
+
+    itens.forEach(item => {
+        const tr = document.createElement("tr");
+        const precoTotalItem = (parseFloat(item.preco) * parseInt(item.quantidade)).toFixed(2).replace('.', ',');
+        const nomeFormatado = `${item.nome} (x${item.quantidade})`;
+        
+        tr.innerHTML = `
+            <td class="item-nome">${nomeFormatado}</td>
+            <td class="item-preco">R$ ${precoTotalItem}</td>
+        `;
+        lista.appendChild(tr);
+    });
+
+    // 1. Exibir o valor total (com frete)
+    if (totalComFrete) {
+        totalSpan.textContent = `R$ ${parseFloat(totalComFrete).toFixed(2).replace('.', ',')}`;
+    } else {
+        // Fallback: se não encontrar o total, usa o subtotal e adiciona o frete
+        const total = subtotalItens + FRETE_TAXA;
+        totalSpan.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    }
+    
+    // 2. Exibir o valor do frete (se houver subtotal > 0)
+    if (subtotalItens > 0) {
+        freteSpan.textContent = `R$ ${FRETE_TAXA.toFixed(2).replace('.', ',')}`;
+    } else {
+         freteSpan.textContent = `R$ 0,00`;
+    }
+
+    // Define um PIX de exemplo baseado no total final
+    const pixInput = document.getElementById("input-codigo-pix");
+    const valorPix = totalComFrete ? parseFloat(totalComFrete) : subtotalItens + FRETE_TAXA;
+
+    if (pixInput) {
+        // Exemplo de código PIX com o valor formatado
+        pixInput.value = `00020126580014BR.GOV.BCB.PIX0136a8f29c77-4b2e-47cd-9c10-55c72d1f91c55204000053039865406${valorPix.toFixed(2).replace('.', '')}5802BR5920 LTDA6009SAO.PAULO62070503***6304ABCD`;
+    }
+}
+
+function validarCartao() {
+    let isValid = true;
+    const formGroups = document.querySelectorAll('#detalhes-cartao .form-group');
+
+    formGroups.forEach(group => {
+        const input = group.querySelector('.form-control');
+        
+        group.classList.remove('has-error');
+        input.classList.remove('is-invalid');
+
+        if (!input.checkValidity()) {
+            group.classList.add('has-error');
+            input.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        if (input.id === 'validade' && input.value) {
+            if (input.checkValidity()) {
+                group.querySelector('.invalid-feedback').textContent = input.getAttribute('data-default-msg') || "Validade inválida.";
+            }
+        }
+    });
+
+    return isValid;
+}
+
+function finalizarPagamento() {
+    const metodoSelecionado = document.querySelector('input[name="metodo"]:checked');
+
+    if (!metodoSelecionado) {
+        alert("Por favor, selecione um método de pagamento.");
+        return;
+    }
+
+    if (metodoSelecionado.value === 'cartao') {
+        if (!validarCartao()) {
+            return;
+        }
+        
+        simularSucesso("Pagamento Aprovado!","Seu pagamento com cartão foi processado. Você receberá a confirmação por e-mail.");
+        
+    } else if (metodoSelecionado.value === 'pix') {
+        document.getElementById("pix-formulario").style.display = "none";
+        document.getElementById("pix-aguardando").style.display = "block";
+        document.getElementById("btn-finalizar").style.display = "none";
+        
+        simularSucesso("Aguardando Pagamento PIX","Seu pedido foi registrado. Seu acesso será liberado assim que o PIX for compensado. Isso pode levar alguns minutos.");
+
+    }
+}
+
+function simularSucesso(titulo, texto) {
+    document.getElementById('container-pagamento').style.display = 'none';
+    document.getElementById('btn-voltar').style.display = 'none';
+    
+    const mensagemFinal = document.getElementById('mensagem-final');
+    document.getElementById('titulo-final').textContent = titulo;
+    document.getElementById('texto-final').textContent = texto;
+    mensagemFinal.style.display = 'block';
+
+    // Opcional: Limpar o carrinho após a finalização
+    localStorage.removeItem("carrinho");
+    localStorage.removeItem("carrinhoPagamento");
+    localStorage.removeItem("totalCompra"); 
+}
+
+function redirecionarAposSucesso() {
+    window.location.href = 'index.html'; 
+}
+
+</script>
+
+</body>
+</html>

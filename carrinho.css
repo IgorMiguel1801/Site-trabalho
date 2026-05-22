@@ -1,0 +1,330 @@
+/* --- 1. Variáveis Globais (Copiadas de produtos.css) --- */
+:root {
+    --roxo-fundo: #170a24; 
+    --roxo-escuro-transparente: #2e154f;
+    --roxo-principal: #d39aff; /* Destaque Secundário (Purple Neon) */
+    --verde-destaque: #92e667; /* Destaque Principal (Green Neon) */
+    --cor-texto-claro: #f0f0f0;
+    --cor-menu-borda: #4e2e72;
+    --cor-remocao: #ff4d4d; /* Vermelho para remover item */
+}
+
+/* Reset Básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif; 
+    transition: all 0.2s ease-in-out; 
+}
+
+.container {
+    max-width: 1100px; 
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+body {
+    background-color: var(--roxo-fundo);
+    color: var(--cor-texto-claro);
+    min-height: 100vh;
+}
+
+/* ========================================================================
+   2. HEADER E ESTILOS GLOBAIS (Copiados de produtos.css)
+   ======================================================================== */
+.header {
+    width: 100%;
+    background-color: rgba(10, 5, 15, 0.95); 
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(100px);
+    padding: 8px 0; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6); 
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px; 
+}
+.menu a { 
+    color: white;
+ }
+.btn { 
+ padding: 8px 15px; 
+    font-weight: bold; 
+    /* ... (outros estilos) ... */
+ background-color: var(--verde-destaque);
+ /* REMOVE O !important */
+ color: var(--roxo-fundo); 
+ box-shadow: 0 0 5px rgba(146, 230, 103, 0.5);
+}
+.menu a.btn {
+    color: var(--roxo-fundo);
+ }
+.btn:hover {
+    background-color: #7bbf4c;
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(146, 230, 103, 0.7);
+}
+
+.logo { color: var(--roxo-principal); font-size: 1.5em; font-weight: 700; }
+.menu { display: flex; align-items: center; gap: 15px; }
+.menu-esquerda, .menu-direita { display: flex; align-items: center; gap: 15px; }
+.menu a { color: white; text-decoration: none; padding: 8px 12px; border-radius: 4px; transition: all 0.3s ease-in-out; }
+.menu a:not(.btn):hover, .menu a.active:not(.btn) { background-color: #4b2f68; transform: translateY(-2px); }
+
+/* Estilo para Botões */
+
+
+/* ========================================================================
+   3. LAYOUT DO CARRINHO (Estrutura Principal)
+   ======================================================================== */
+.carrinho-main {
+    padding: 40px 0;
+    flex-grow: 1;
+}
+
+.titulo-pagina {
+    font-size: 2.5em;
+    color: var(--verde-destaque);
+    text-align: center;
+    margin-bottom: 50px;
+    text-shadow: 0 0 10px rgba(146, 230, 103, 0.5); 
+    font-weight: 800;
+}
+
+.cart-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start; /* Alinha o resumo e a lista ao topo */
+}
+
+/* --- Lista de Itens (Esquerda) --- */
+.lista-itens {
+    flex: 2; /* Ocupa mais espaço */
+    min-width: 60%; 
+}
+
+.carrinho-vazio {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2em;
+    color: var(--cor-texto-secundario);
+}
+.carrinho-vazio a {
+    color: var(--roxo-principal);
+    text-decoration: none;
+}
+.carrinho-vazio a:hover {
+    text-decoration: underline;
+}
+
+.item-carrinho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    /* Cores e bordas do seu Card de Produto */
+    background-color: var(--roxo-escuro-transparente); 
+    border: 1px solid var(--cor-menu-borda); 
+    border-radius: 8px; 
+    padding: 20px 25px; 
+    margin-bottom: 20px;
+    
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); 
+}
+
+.detalhes-item {
+    flex-grow: 1; 
+}
+
+.nome-item {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--cor-texto-claro);
+    margin: 0;
+}
+
+.preco-unidade {
+    color: var(--cor-texto-secundario);
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.acoes-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.preco-total {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: var(--verde-destaque);
+    min-width: 80px; /* Garante que o total não mude de largura */
+    text-align: right;
+}
+
+/* Controle de Quantidade (Seguindo seu botão .btn) */
+.controle-quantidade {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--cor-menu-borda);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.qty-btn {
+    background-color: var(--roxo-fundo); 
+    color: var(--verde-destaque);
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.1em;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.qty-btn:hover {
+    background-color: var(--roxo-escuro-transparente);
+    color: #aaffaa; 
+}
+
+.quantidade-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    color: var(--cor-texto-claro);
+    font-size: 1em;
+    padding: 5px 0;
+}
+.quantidade-input::-webkit-outer-spin-button,
+.quantidade-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.btn-remover {
+    background: none;
+    border: none;
+    color: var(--cor-remocao); 
+    cursor: pointer;
+    padding: 5px;
+}
+
+.btn-remover svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-remover:hover {
+    color: #ff8888;
+    transform: scale(1.1);
+}
+
+/* --- Resumo do Pedido (Direita) --- */
+.resumo-pedido {
+    flex: 1; /* Ocupa o restante do espaço */
+    min-width: 300px;
+    
+    /* Cores e bordas do seu Card de Produto */
+    background-color: var(--roxo-escuro-transparente);
+    border: 1px solid var(--roxo-principal); /* Borda de destaque (Purple Neon) */
+    padding: 25px;
+    border-radius: 8px;
+    
+    box-shadow: 0 0 15px rgba(211, 154, 255, 0.3); /* Glow sutil */
+    
+    height: fit-content;
+    position: sticky;
+    top: 80px; /* Para que ele fique "grudado" na navegação ao rolar */
+}
+
+.titulo-resumo {
+    font-size: 1.3em;
+    font-weight: 700;
+    text-align: center;
+    color: var(--roxo-principal);
+    margin-bottom: 20px;
+    text-shadow: none;
+}
+
+.linhas-resumo hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, transparent, var(--cor-menu-borda), transparent);
+    margin: 15px 0;
+}
+
+.linha {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.linha.total {
+    font-size: 1.4em;
+    font-weight: 800;
+    color: var(--verde-destaque); /* Destaque no total */
+    margin-top: 20px;
+}
+
+.btn-checkout {
+ width: 100%;
+ margin-top: 30px;
+ padding: 15px 0; 
+ font-size: 1.1em;
+    /* CORREÇÃO CHAVE: Força o link (<a>) a se comportar como um bloco (100% de largura) */
+ display: block; 
+    /* Centraliza o texto dentro dos 100% de largura */
+    text-align: center; 
+}
+
+
+/* ========================================================================
+   4. Responsividade (Adaptada)
+   ======================================================================== */
+@media (max-width: 900px) {
+    .cart-layout {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .lista-itens, .resumo-pedido {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .resumo-pedido {
+        position: static; /* Remove o sticky no mobile */
+    }
+}
+
+@media (max-width: 650px) {
+    .item-carrinho {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .acoes-item {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .preco-total {
+        min-width: auto;
+        text-align: left;
+    }
+    
+    .controle-quantidade {
+        flex-grow: 1;
+        justify-content: flex-start;
+    }
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Survivors Tech</title>
+    <link rel="stylesheet" href="cadastro.css">
+
+    <style>
+        .erro {
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .sucesso {
+            background: #44c767;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Survivors Tech</h1>
+        </div>
+    </header>
+    
+    <main class="login-container">
+        <form class="login-form" id="cadastro-form" action="#" method="POST" autocomplete="off">
+            <h2>Criar nova conta</h2>
+
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required autocomplete="off">
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Digite seu email" required autocomplete="off">
+
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required autocomplete="new-password">
+
+            <!-- caixa de mensagem -->
+            <div id="msg-erro" style="display:none;"></div>
+
+            <button type="submit" class="btn">Cadastrar</button>
+
+            <p>Já tem uma conta? <a href="login.html">Faça login</a></p>
+        </form>
+    </main>
+
+    <script>
+        const form = document.querySelector('.login-form');
+        const msg = document.getElementById('msg-erro');
+
+        function mostrarMensagem(texto, tipo) {
+            msg.textContent = texto;
+            msg.className = tipo;
+            msg.style.display = 'block';
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value.trim();
+
+            if (!nome || !email || !senha) {
+                mostrarMensagem('Preencha todos os campos!', 'erro');
+                return;
+            }
+
+            if (localStorage.getItem(email)) {
+                mostrarMensagem('Este email já está cadastrado!', 'erro');
+                return;
+            }
+
+            const usuario = { nome, email, senha };
+            localStorage.setItem(email, JSON.stringify(usuario));
+
+            mostrarMensagem('Cadastro realizado com sucesso! Redirecionando...', 'sucesso');
+
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+    </script>
+    
+</body>
+</html>

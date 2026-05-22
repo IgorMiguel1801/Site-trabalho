@@ -1,0 +1,319 @@
+/* --- 1. Variáveis Globais (Mantenha a consistência) --- */
+:root {
+    /* Cores Fornecidas */
+    --roxo-fundo: #170a24; 
+    --roxo-escuro-transparente: #2e154f;
+    --roxo-principal: #d39aff; 
+    --verde-destaque: #92e667; 
+    --cor-texto-claro: #f0f0f0;
+    --cor-texto-secundario: #B0B0B0;
+    --cor-menu-fundo: rgba(23, 10, 36, 0.9);
+    --cor-menu-borda: #4e2e72;
+}
+
+/* Reset Básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif; 
+    transition: all 0.2s ease-in-out; 
+}
+
+.container {
+    max-width: 1100px; 
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* ========================================================================
+   2. ESTILOS GLOBAIS
+   ======================================================================== */
+body {
+    background-color: var(--roxo-fundo);
+    color: var(--cor-texto-claro);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+h3 {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: var(--roxo-principal);
+    margin-bottom: 40px;
+}
+
+/* ========================================================================
+   3. HEADER E NAVEGAÇÃO
+   ======================================================================== */
+.header {
+    width: 100%;
+    background-color: rgba(10, 5, 15, 0.95); 
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    padding: 8px 0; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6); 
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px; 
+}
+
+.logo {
+    color: var(--roxo-principal);
+    font-size: 1.5em; 
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 0 2px rgba(211, 154, 255, 0.5); 
+}
+
+/* Menu de Navegação */
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.menu-esquerda, .menu-direita {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
+}
+.menu a:not(.btn):hover, .menu a.active:not(.btn) {
+    background-color: #4b2f68;
+    transform: translateY(-2px);
+}
+
+/* Estilo para Botões (Carrinho, Login, Cadastro) */
+.btn {
+    padding: 8px 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    text-transform: uppercase;
+    text-decoration: none; 
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+.btn:not(.secundario) { 
+    background-color: var(--verde-destaque);
+    color: var(--roxo-fundo);
+    box-shadow: 0 0 5px rgba(146, 230, 103, 0.5);
+}
+.btn:not(.secundario):hover {
+    background-color: #7bbf4c;
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(146, 230, 103, 0.7);
+}
+
+/* Botão Secundário (Login/Cadastro) */
+.btn.secundario {
+    background: transparent; 
+    color: var(--roxo-principal);
+    border: 1px solid var(--roxo-principal);
+    box-shadow: 0 0 5px rgba(224, 180, 255, 0.5); 
+}
+.btn.secundario:hover {
+    background-color: var(--roxo-principal); 
+    color: var(--roxo-fundo);
+    box-shadow: 0 0 15px var(--roxo-principal); 
+    transform: translateY(-1px);
+}
+
+/* ========================================================================
+   4. PRODUTOS GRID
+   ======================================================================== */
+.produtos {
+    flex-grow: 1;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.produtos h2 {
+    font-size: 2.5em;
+    color: var(--verde-destaque);
+    text-align: center;
+    margin-bottom: 50px;
+    text-shadow: 0 0 10px rgba(146, 230, 103, 0.5); 
+    font-weight: 800;
+}
+
+.grid-produtos { 
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 30px;
+    padding-bottom: 50px;
+}
+
+.card {
+    background-color: var(--roxo-escuro-transparente); 
+    border: 1px solid var(--cor-menu-borda); 
+    border-radius: 12px; 
+    padding: 25px; 
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 5px rgba(211, 154, 255, 0.1); 
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-8px); 
+    border-color: var(--roxo-principal); 
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(211, 154, 255, 0.5); 
+}
+
+.card img {
+    width: 100%;
+    max-height: 180px; 
+    object-fit: contain; 
+    border-radius: 5px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.15));
+}
+
+.card h3 {
+    color: var(--cor-texto-claro); 
+    font-size: 1.2em; 
+    font-weight: 600;
+    min-height: 3.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    margin-bottom: 10px;
+    line-height: 1.3; 
+    margin-top: 0;
+}
+
+.card p {
+    color: var(--verde-destaque);
+    font-size: 1.8em; 
+    font-weight: 800; 
+    margin-bottom: 25px;
+    margin-top: auto;
+}
+
+.card button {
+    width: 100%;
+    background-color: var(--verde-destaque);
+    color: var(--roxo-fundo);
+    border: 2px solid var(--verde-destaque); 
+    padding: 12px 0; 
+    border-radius: 8px; 
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(146, 230, 103, 0.4);
+    margin-top: 20px; 
+}
+
+.card button:hover {
+    background-color: transparent;
+    color: var(--verde-destaque);
+    border-color: var(--verde-destaque);
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(146, 230, 103, 0.8);
+}
+
+/* ========================================================================
+   5. RESPONSIVIDADE
+   ======================================================================== */
+@media (max-width: 1100px) {
+    .grid-produtos {
+        gap: 20px; 
+    }
+}
+
+@media (max-width: 900px) {
+    .grid-produtos {
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 30px;
+    }
+    .menu-esquerda, .menu-direita {
+        display: none;
+    }
+    .hamburger-menu {
+        display: block !important; 
+    }
+}
+
+@media (max-width: 600px) {
+    .grid-produtos {
+        grid-template-columns: 1fr; 
+        gap: 25px;
+        padding: 0 15px 50px 15px;
+    }
+    .produtos h2 {
+        font-size: 2em;
+    }
+}
+
+/* ============================
+   MENU LATERAL IGUAL AO INDEX
+   ============================ */
+.hamburger-menu {
+    display: none; 
+    position: relative;
+}
+
+#hamburger-btn {
+    background: none;
+    border: none;
+    color: var(--roxo-principal);
+    font-size: 2em;
+    cursor: pointer;
+}
+
+#hamburger-dropdown {
+    display: none;
+    flex-direction: column;
+    background-color: var(--roxo-escuro);
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+    min-width: 180px;
+}
+
+#hamburger-dropdown span#welcome-message {
+    color: var(--roxo-principal);
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#logout-btn {
+    margin-top: auto;
+    padding: 10px;
+    border: none;
+    background-color: var(--verde-destaque);
+    color: var(--roxo-fundo);
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+}
+
+#logout-btn:hover {
+    background-color: #7bbf4c;
+}

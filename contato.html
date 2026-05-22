@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Contato - TecnoPC</title>
+    <link rel="stylesheet" href="contato.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <h1 class="logo">Survivors Tech</h1>
+
+        <nav class="menu" id="menu-direita">
+            <div class="menu-esquerda">
+                <a href="index.html">Home</a>
+                <a href="produtos.html">Produtos</a>
+                <a href="contato.html">Contato</a>
+            </div>
+
+            <div class="menu-direita">
+                <a href="carrinho.html" class="btn cart-link">
+                    🛒 Carrinho
+                    <span id="cart-count">0</span>
+                </a>
+
+                <span id="welcome-message" style="display:none; font-weight: bold; color: var(--roxo-principal);"></span>
+
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <button id="hamburger-btn">☰</button>
+                    <div id="hamburger-dropdown">
+                        <div class="welcome-box">
+                            <span id="welcome-message"></span>
+                        </div>
+                        <button id="logout-btn" class="btn-logout">Sair</button>
+                    </div>
+                </div>
+                </div>
+        </nav>
+    </div>
+</header>
+
+<main class="contato">
+    <h2>Entre em contato</h2>
+    <form class="form-contato">
+        <input type="text" placeholder="Nome Completo" required>
+        <input type="email" placeholder="Email" required>
+        <textarea placeholder="Sua mensagem" required></textarea>
+        <button type="submit">Enviar</button>
+    </form>
+</main>
+
+<script>
+    // ESTILO RÁPIDO para o contador e mensagem (Adicionar ao 'contato.css' é ideal)
+    document.write('<style>' +
+        '.cart-link { position: relative; padding-right: 25px !important; }' +
+        '#cart-count { position: absolute; top: -5px; right: 0px; background-color: #ff4d4d; color: white; border-radius: 50%; padding: 2px 7px; font-size: 0.75em; font-weight: bold; min-width: 20px; text-align: center; line-height: 1.2; }' +
+        '#welcome-message { padding: 8px 0px; border-radius: 6px; white-space: nowrap; cursor: default; }' +
+    '</style>');
+
+
+    // Função para calcular e atualizar o contador do carrinho
+    function updateCartCount() {
+        const cartCountElement = document.getElementById('cart-count');
+        if (!cartCountElement) return;
+
+        try {
+            const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const totalItems = carrinho.reduce((sum, item) => sum + parseInt(item.quantidade || 0), 0);
+            
+            cartCountElement.textContent = totalItems;
+            cartCountElement.style.display = totalItems > 0 ? 'inline-block' : 'none'; 
+
+        } catch (e) {
+            console.error("Erro ao ler carrinho para contagem:", e);
+            cartCountElement.textContent = '0';
+            cartCountElement.style.display = 'none';
+        }
+    }
+
+
+    // Função que faz a troca visual: Boas-Vindas vs. Login/Cadastrar
+    function verificarStatusLogin() {
+        const usuarioLogado = localStorage.getItem('usuarioLogado');
+        const usuarioNome = localStorage.getItem('usuarioNome') || 'Usuário'; 
+
+        const loginLink = document.getElementById('login-link');
+        const cadastroLink = document.getElementById('cadastro-link');
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const welcomeMessage = document.getElementById('welcome-message'); 
+        
+        if (!loginLink || !cadastroLink || !hamburgerMenu || !welcomeMessage) return;
+
+        if (usuarioLogado) {
+            // SE LOGADO: Esconde Login/Cadastrar e mostra Boas-Vindas
+            loginLink.style.display = 'none';
+            cadastroLink.style.display = 'none';
+            
+            welcomeMessage.textContent = `Seja bem-vindo, ${usuarioNome}!`;
+            welcomeMessage.style.display = 'block';
+
+            hamburgerMenu.style.display = 'block'; 
+        } else {
+            // SE DESLOGADO: Esconde Boas-Vindas e mostra Login/Cadastrar
+            welcomeMessage.style.display = 'none'; 
+            loginLink.style.display = 'block';
+            cadastroLink.style.display = 'block';
+            hamburgerMenu.style.display = 'none';
+        }
+    }
+
+    // LÓGICA DO LOGOUT
+    const logoutBtn = document.getElementById('logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            localStorage.removeItem('usuarioLogado'); 
+            localStorage.removeItem('usuarioNome'); 
+            alert('Você desconectou!');
+            window.location.href = 'index.html'; 
+        });
+    }
+
+    // LÓGICA DO MENU HAMBURGER
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const hamburgerDropdown = document.getElementById('hamburger-dropdown');
+
+    if (hamburgerBtn && hamburgerDropdown) {
+        hamburgerBtn.addEventListener('click', function() {
+            hamburgerDropdown.style.display = (hamburgerDropdown.style.display === 'none' || hamburgerDropdown.style.display === '') ? 'flex' : 'none';
+        });
+        
+        document.addEventListener('click', function(e) {
+            const isClickInside = hamburgerMenu.contains(e.target);
+            if (hamburgerDropdown.style.display === 'flex' && !isClickInside) {
+                hamburgerDropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // Executa as verificações e o contador ao carregar a página
+    window.onload = function() {
+        verificarStatusLogin();
+        updateCartCount(); 
+    };
+</script>
+</body>
+</html>

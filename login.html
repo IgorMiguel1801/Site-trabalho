@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Survivors Tech</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Survivors Tech</h1>
+        </div>
+    </header>
+
+    <main class="login-container">
+        <form class="login-form" action="#" method="POST" autocomplete="off"> 
+            <h2>Entrar na sua conta</h2>
+
+            <input type="text" style="display:none" autocomplete="username">
+            <input type="password" style="display:none" autocomplete="current-password">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Digite seu email" required autocomplete="username">
+
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required autocomplete="current-password">
+
+            <button type="submit" class="btn">Entrar</button>
+
+            <p>Não tem uma conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
+        </form>
+    </main>
+
+    <script>
+        
+        // Mantemos a função de limpeza na carga da página, caso ela ajude:
+        window.onload = function() {
+            setTimeout(function() {
+                const emailInput = document.getElementById('email');
+                const senhaInput = document.getElementById('senha');
+                
+                if (emailInput) {
+                    emailInput.value = '';
+                }
+                if (senhaInput) {
+                    senhaInput.value = '';
+                    // Truque extra para limpar senhas
+                    senhaInput.type = 'text';
+                    senhaInput.type = 'password';
+                }
+            }, 1); 
+        };
+
+
+        const form = document.querySelector('.login-form');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+
+            const email = form.email.value.trim();
+            const senha = form.senha.value.trim();
+
+            const usuarioCadastrado = JSON.parse(localStorage.getItem(email));
+
+            if (usuarioCadastrado && usuarioCadastrado.senha === senha) {
+                
+                // 1. Salva o status de logado
+                localStorage.setItem('usuarioLogado', 'true'); 
+                
+                // 2. Salva o nome do usuário para a mensagem de boas-vindas
+                localStorage.setItem('usuarioNome', usuarioCadastrado.nome);
+                
+                // 3. Redireciona
+                window.location.replace('index.html'); 
+                
+            } else {
+                alert('Email ou senha incorretos');
+            }
+        });
+    </script>
+</body>
+</html>

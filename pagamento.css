@@ -1,0 +1,448 @@
+:root {
+    /* Cores Futuristas Sóbrias */
+    --roxo-fundo: #170a24;
+    --roxo-componente: #1F1133; /* Fundo do Card Principal */
+    --verde-destaque: #92e667; /* Destaque principal para botões/valores (Neon) */
+    --roxo-principal: #d39aff; /* Roxo Claro, usado para bordas de foco sutil */
+    --cor-texto-claro: #f0f0f0; 
+    --cor-texto-secundario: #b0b0b0; /* Cor de texto discreta */
+    --cor-menu-borda: #4e2e72; /* Borda sutil de divisão */
+
+    /* Sombras e Transparência */
+    --sombra-card: 0 4px 20px rgba(0, 0, 0, 0.8); 
+    --sombra-input-foco: 0 0 0 2px rgba(211, 153, 255, 0.4); 
+    --sombra-verde-finalizar: 0 5px 20px rgba(146, 230, 103, 0.4);
+
+    /* Tipografia e Transição */
+    --fonte-corpo: 'Roboto Mono', monospace; 
+    --fonte-titulo: 'Orbitron', sans-serif; 
+    --tempo-transicao: 0.25s ease-out;
+}
+
+/* --- 2. RESET E ESTILOS GERAIS --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* Transição suave para hover/focus */
+    transition: all var(--tempo-transicao);
+}
+
+body {
+    font-family: var(--fonte-corpo);
+    background-color: var(--roxo-fundo);
+    min-height: 100vh;
+    color: var(--cor-texto-claro);
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    padding: 30px 20px;
+}
+
+main#container-pagamento {
+    background-color: var(--roxo-componente);
+    padding: 40px; 
+    border-radius: 12px; 
+    width: 100%;
+    max-width: 600px; /* Reduzido para focar no conteúdo */
+    margin: auto;
+    box-shadow: var(--sombra-card); 
+    border: 1px solid var(--cor-menu-borda);
+}
+
+/* --- TÍTULOS E SEPARADORES --- */
+h1 {
+    font-family: var(--fonte-titulo);
+    color: var(--cor-texto-claro); 
+    margin-bottom: 30px;
+    font-size: 2.2em; 
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+h2 {
+    font-family: var(--fonte-titulo); 
+    color: var(--cor-texto-claro);
+    border-bottom: 2px solid var(--cor-menu-borda);
+    padding-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 1.3em; 
+    font-weight: 400; 
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* --- BOTÃO VOLTAR --- */
+#btn-voltar {
+    margin-bottom: 20px; 
+    padding: 10px 15px; 
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 400;
+    background-color: transparent;
+    color: var(--cor-texto-secundario);
+    border: 1px solid var(--cor-menu-borda);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start; /* Alinha no canto superior esquerdo */
+}
+
+#btn-voltar:hover {
+    background-color: #2F194E;
+    color: var(--roxo-principal);
+    border-color: var(--roxo-principal);
+}
+
+/* --- TABELA DE RESUMO CORRIGIDA --- */
+#tabela-itens {
+    width: 100%;
+    margin-bottom: 30px;
+    font-size: 1em;
+    color: var(--cor-texto-secundario);
+    border-collapse: collapse;
+}
+
+#tabela-itens thead th {
+    color: var(--roxo-principal);
+    padding: 10px 0;
+    border-bottom: 2px solid var(--cor-menu-borda);
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.95em;
+}
+
+/* Alinhamento dos cabeçalhos: 75% para o nome, 25% para o preço */
+#tabela-itens thead th:first-child { width: 75%; text-align: left; }
+#tabela-itens thead th:last-child { width: 25%; text-align: right; }
+
+#tabela-itens tbody td {
+    padding: 10px 0; 
+    border-bottom: 1px dashed rgba(78, 46, 114, 0.4); 
+    color: var(--cor-texto-claro);
+    vertical-align: top;
+    /* Alinha o texto do item à esquerda */
+    text-align: left; 
+}
+
+/* NOVO: Alinhamento específico para a célula do preço no corpo */
+#tabela-itens tbody tr td:last-child { 
+    text-align: right; /* Alinha o preço estritamente à direita */
+    font-weight: 700;
+    color: var(--verde-destaque);
+}
+
+/* Rodapé da Tabela (Totais) */
+#tabela-itens tfoot tr:last-child td {
+    padding-top: 20px;
+    border-top: 2px solid var(--verde-destaque); /* Linha de destaque para o total */
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--verde-destaque);
+}
+
+/* Garante que o label "Total a Pagar" fique à esquerda */
+#tabela-itens tfoot tr td:first-child {
+    text-align: left;
+}
+/* O valor total deve ficar à direita, alinhado com o preço dos itens */
+#tabela-itens tfoot tr td:last-child {
+    text-align: right;
+}
+
+/* --- OPÇÕES DE PAGAMENTO (ULTRACLEAN BUTTONS) --- */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.grupo-metodos {
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 20px;
+    border: none;
+    padding: 0;
+}
+
+.opcao-pagamento {
+    flex: 1; 
+    position: relative;
+}
+
+.opcao-pagamento input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.opcao-pagamento label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 15px; /* Mais espaço para facilitar o clique/toque */
+    border: 1px solid var(--cor-menu-borda);
+    background-color: var(--roxo-fundo);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 400;
+    color: var(--cor-texto-secundario);
+    font-family: var(--fonte-corpo);
+    width: 100%;
+}
+
+.opcao-pagamento label:hover {
+    border-color: var(--roxo-principal);
+    background-color: #2F194E;
+}
+
+/* Estado SELECIONADO: Borda roxa discreta */
+.opcao-pagamento input:checked + label {
+    border-color: var(--roxo-principal); 
+    background-color: #2F194E;
+    color: var(--cor-texto-claro);
+    box-shadow: none;
+}
+
+.opcao-pagamento input:checked + label i {
+    color: var(--roxo-principal); /* Ícone no roxo quando selecionado */
+}
+
+/* --- INPUTS E DETALHES --- */
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: var(--cor-texto-secundario);
+    font-weight: 400;
+}
+
+input[type="text"], 
+input[type="tel"] {
+    width: 100%;
+    background-color: var(--roxo-fundo); 
+    color: var(--cor-texto-claro);
+    border: 1px solid var(--cor-menu-borda);
+    padding: 12px; /* Mais padding */
+    border-radius: 4px; 
+    font-size: 1em;
+    font-family: var(--fonte-corpo);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4); 
+}
+
+input:focus {
+    border-color: var(--roxo-principal); 
+    box-shadow: var(--sombra-input-foco), inset 0 1px 3px rgba(0, 0, 0, 0.6);
+    background-color: #2F194E;
+    outline: none;
+}
+
+.detalhes-pagamento {
+    border: 1px solid var(--cor-menu-borda); 
+    background-color: var(--roxo-fundo);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    color: var(--cor-texto-secundario);
+}
+
+.linha-cartao {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* PIX Status Message */
+.pix-status-message {
+    text-align: center;
+    padding: 20px;
+    border: 1px dashed var(--verde-destaque);
+    border-radius: 8px;
+    margin-top: 20px;
+}
+.pix-status-message h4 {
+    color: var(--verde-destaque);
+    font-family: var(--fonte-titulo);
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+.pix-status-message p {
+    color: var(--cor-texto-secundario);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+.pix-status-message .fas {
+    font-size: 2.5em;
+    color: var(--roxo-principal);
+}
+
+
+/* PIX Input e Botão */
+#input-codigo-pix {
+    color: var(--verde-destaque);
+    border: 1px dashed var(--verde-destaque);
+    background-color: #12081d; 
+    text-align: center;
+    font-size: 0.85em;
+    padding: 10px;
+    margin: 15px auto;
+    display: block;
+    max-width: 95%;
+    /* Garante que o texto seja legível e não quebre */
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+#detalhes-pix button {
+    background-color: var(--roxo-componente);
+    color: var(--cor-texto-claro);
+    border: 1px solid var(--cor-menu-borda);
+    font-family: var(--fonte-corpo);
+    font-weight: 400;
+    margin-top: 15px;
+    width: 100%;
+}
+
+#detalhes-pix button:hover {
+    background-color: #2F194E;
+    border-color: var(--roxo-principal);
+    color: var(--roxo-principal);
+}
+
+
+/* --- BOTÕES DE AÇÃO --- */
+.botao-acao {
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--fonte-titulo);
+    letter-spacing: 1px;
+}
+
+/* Botão Finalizar (O único com o destaque verde) */
+#btn-finalizar {
+    background-color: var(--verde-destaque);
+    color: var(--roxo-fundo);
+    font-size: 1.2em; 
+    margin-top: 30px;
+    box-shadow: var(--sombra-verde-finalizar);
+    width: 100%;
+}
+
+#btn-finalizar:hover {
+    background-color: #b0ff80; /* Um verde mais claro no hover */
+    box-shadow: 0 5px 20px rgba(146, 230, 103, 0.6);
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    main#container-pagamento {
+        padding: 20px;
+        border-radius: 0;
+        max-width: 100%;
+        box-shadow: none;
+        border-left: none;
+        border-right: none;
+    }
+
+    .grupo-metodos {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .linha-cartao {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    #mensagem-final {
+    padding: 20px;
+    background: #150b22;
+    border: 1px solid #7b3ff2;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    margin: 40px auto;
+    animation: fadeIn 0.5s ease forwards;
+    text-align: center;
+}
+
+#btn-voltar-loja {
+    display: block;
+    margin: 25px auto 0 auto; /* desce o botão de verdade */
+    padding: 10px 18px;
+    background: #7b3ff2;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+}
+
+#btn-voltar-loja:hover {
+    opacity: .85;
+}
+}
+
+/* ---------------------------------------------------------------------- */
+/* --- ESTILOS ADICIONAIS PARA VALIDAÇÃO PROFISSIONAL (MOSTRAR ERROS) --- */
+/* ---------------------------------------------------------------------- */
+
+/* * A classe 'form-group' encapsula o label, o input e a mensagem de erro.
+ * Foi adicionada no HTML na seção do cartão.
+ */
+.form-group {
+    margin-bottom: 20px; 
+    position: relative;
+}
+
+/* * Estilo para campos que falharam na validação.
+ * A classe 'is-invalid' é adicionada ao input pelo JavaScript.
+ */
+.form-control.is-invalid {
+    /* Usamos !important para garantir que sobrescreva o estilo de foco padrão */
+    border: 1px solid #ff4136 !important; /* Vermelho vibrante de erro */
+    box-shadow: 0 0 5px rgba(255, 65, 54, 0.5);
+}
+
+/*
+ * Mensagem de erro que aparece embaixo do campo.
+ * Começa escondida e é revelada pelo JavaScript.
+ */
+.invalid-feedback {
+    display: none; 
+    color: #ff4136; /* Cor do texto do erro */
+    font-size: 0.85em;
+    margin-top: 5px;
+    font-family: var(--fonte-corpo);
+}
+
+/* * Classe que o JavaScript adiciona ao .form-group pai para 
+ * MOSTRAR a mensagem de erro específica.
+ */
+.form-group.has-error .invalid-feedback {
+    display: block;
+}

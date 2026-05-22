@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos - TecnoPC</title>
+    <link rel="stylesheet" href="produtos.css">
+    <style>
+        .cart-link {
+            position: relative;
+            padding-right: 25px !important;
+        }
+        #cart-count {
+            position: absolute;
+            top: -5px;
+            right: 0px;
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.75em;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <h1 class="logo">Survivors Tech</h1>
+        <nav class="menu" id="menu-direita">
+            <div class="menu-esquerda">
+                <a href="index.html">Home</a>
+                <a href="produtos.html">Produtos</a>
+                <a href="contato.html">Contato</a>
+            </div>
+            <div class="menu-direita">
+                <a href="carrinho.html" class="btn cart-link">
+                    🛒 Carrinho
+                    <span id="cart-count">0</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="produtos">
+    <h2>Produtos em destaques</h2>
+
+    <div class="grid-produtos">
+
+        <div class="card">
+            <img src="../img.png/modulo gps.png.png" alt="Módulo GPS Neo 6M v2">
+            <h3>Módulo GPS Neo 6M v2</h3>
+            <p>R$ 48,62</p>
+            <button class="add-to-cart" 
+                data-id="1" 
+                data-nome="Módulo GPS Neo 6M v2" 
+                data-preco="48.62"
+                data-imagem="../img.png/modulo gps.png.png">Adicionar ao carrinho</button>
+        </div>
+
+        <div class="card">
+            <img src="../img.png/jumperfio protoboard.png.png" alt="Jumperfio Protoboard">
+            <h3>Jumperfio Protoboard</h3>
+            <p>R$ 21,38</p>
+            <button class="add-to-cart" 
+                data-id="2"
+                data-nome="Jumperfio Protoboard" 
+                data-preco="21.38"
+                data-imagem="../img.png/jumperfio protoboard.png.png">Adicionar ao carrinho</button>
+        </div>
+
+        <div class="card">
+            <img src="../img.png/Bateria.png.png" alt="Bateria 3,7v 1000Mah">
+            <h3>Bateria 3,7v 1000Mah</h3>
+            <p>R$ 57,54</p>
+            <button class="add-to-cart" 
+                data-id="3" 
+                data-nome="Bateria 3,7v 1000Mah" 
+                data-preco="57.54"
+                data-imagem="../img.png/Bateria.png.png">Adicionar ao carrinho</button>
+        </div>
+
+        <div class="card">
+            <img src="../img.png/loRa v3.png.png" alt="Dispositivo LoRa V3">
+            <h3>Dispositivo LoRa V3</h3>
+            <p>R$ 184,62</p>
+            <button class="add-to-cart" 
+                data-id="4" 
+                data-nome="ESP32 LoRa V3" 
+                data-preco="184.62"
+                data-imagem="../img.png/loRa v3.png.png">Adicionar ao carrinho</button>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    function updateCartCount() {
+        const cartCountElement = document.getElementById('cart-count');
+        try {
+            const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const totalItems = carrinho.reduce((sum, item) => sum + parseInt(item.quantidade || 0), 0);
+            cartCountElement.textContent = totalItems;
+            cartCountElement.style.display = totalItems > 0 ? 'inline-block' : 'none';
+        } catch (e) {
+            console.error("Erro ao ler carrinho para contagem:", e);
+            cartCountElement.textContent = '0';
+            cartCountElement.style.display = 'none';
+        }
+    }
+
+    const botoesAdicionar = document.querySelectorAll('.add-to-cart');
+    botoesAdicionar.forEach(botao => {
+        botao.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const nome = this.dataset.nome;
+            const preco = parseFloat(this.dataset.preco);
+            const produto = { id: id, nome: nome, preco: preco, quantidade: 1 };
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const produtoExistenteIndex = carrinho.findIndex(item => item.id === id);
+            if (produtoExistenteIndex > -1) {
+                carrinho[produtoExistenteIndex].quantidade += 1;
+            } else {
+                carrinho.push(produto);
+            }
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            updateCartCount();
+        });
+    });
+
+    window.onload = function() {
+        updateCartCount();
+    };
+</script>
+</body>
+</html>

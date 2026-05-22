@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Survivors Tech</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <h1 class="logo">Survivors Tech</h1>
+
+        <div class="menu-direita">
+            <div class="hamburger-menu" id="hamburger-menu">
+                <button id="hamburger-btn">☰</button>
+                <div id="hamburger-dropdown">
+                    <div class="welcome-box">
+                        <span id="welcome-message"></span>
+                    </div>
+                    <button id="logout-btn" class="btn-logout">Sair</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Banner -->
+<section class="banner">
+    <div class="banner-texto">
+        <h2>Conectando você à salvação</h2>
+        <p>LoRa é uma tecnologia de comunicação sem fio de longo alcance e baixo consumo de energia, perfeita para transmitir sinais de socorro, dados de sensores e localização em situações de emergência.</p>
+        <p>Segurança, tecnologia e autonomia para qualquer situação. Descubra nossos produtos LoRa e fique preparado.</p>
+        <a class="btn-banner" href="produtos.html">Ver Produtos</a>
+    </div>
+</section>
+
+<!-- Estatísticas/Info LoRa -->
+<section class="infos">
+    <div class="grid-infos">
+        <div class="info-card">
+            <h3>Alcance Longo</h3>
+            <p>Até 15 km em área aberta.</p>
+        </div>
+        <div class="info-card">
+            <h3>Baixo Consumo</h3>
+            <p>Permite anos de funcionamento com bateria pequena.</p>
+        </div>
+        <div class="info-card">
+            <h3>Segurança</h3>
+            <p>Transmissão criptografada e confiável.</p>
+        </div>
+        <div class="info-card">
+            <h3>Flexibilidade</h3>
+            <p>Conecta sensores, rastreadores e dispositivos IoT.</p>
+        </div>
+    </div>
+</section>
+
+<script>
+// =========================
+// Gerenciamento do usuário logado
+// =========================
+const usuarioNome = localStorage.getItem('usuarioNome'); // Pega o nome salvo no login
+const welcomeMessage = document.getElementById('welcome-message');
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const dropdown = document.getElementById('hamburger-dropdown');
+const logoutBtn = document.getElementById('logout-btn');
+
+if(usuarioNome) {
+    welcomeMessage.textContent = `Olá, ${usuarioNome}`;
+} else {
+    welcomeMessage.textContent = `Olá, Visitante`;
+}
+
+// Toggle dropdown do menu
+hamburgerBtn.addEventListener('click', () => {
+    dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Botão de logout
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('usuarioNome');
+    localStorage.removeItem('usuarioLogado');
+    window.location.href = 'login.html';
+});
+</script>
+
+</body>
+</html>

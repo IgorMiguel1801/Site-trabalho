@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrinho - Survivors Tech</title>
+    <link rel="stylesheet" href="carrinho.css"> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        .cart-link {
+            position: relative;
+            padding-right: 25px !important;
+        }
+        #cart-count {
+            position: absolute;
+            top: -5px;
+            right: 0px;
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.75em;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <h1 class="logo">Survivors Tech</h1>
+
+        <nav class="menu" id="menu-direita">
+            <div class="menu-esquerda">
+                <a href="index.html">Home</a>
+                <a href="produtos.html">Produtos</a>
+                <a href="contato.html">Contato</a>
+            </div>
+
+            <div class="menu-direita">
+                <a href="carrinho.html" class="btn cart-link">
+                    🛒 Carrinho
+                    <span id="cart-count">0</span>
+                </a>
+
+                <span id="welcome-message" style="display:none; font-weight: bold; color: var(--roxo-principal);"></span>
+
+                <div class="hamburger-menu" id="hamburger-menu" style="display:none;">
+                    <button id="hamburger-btn">☰</button>
+                    <div id="hamburger-dropdown" style="display:none;">
+                        <a href="#" id="logout">Sair</a>
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="carrinho-main">
+    <h2 class="titulo-pagina">Seu Carrinho de Compras</h2>
+    
+    <div class="cart-layout container">
+        
+        <section class="lista-itens">
+            </section>
+
+        <aside class="resumo-pedido">
+            <h3 class="titulo-resumo">Resumo do Pedido</h3>
+            <div class="linhas-resumo">
+                <div class="linha">
+                    <span>Subtotal (<span id="count-itens">0</span> item)</span>
+                    <span class="valor" id="subtotal-valor">R$ 0,00</span>
+                </div>
+                <div class="linha">
+                    <span>Frete</span>
+                    <span class="valor" id="frete-valor">R$ 0,00</span>
+                </div>
+                <hr>
+                <div class="linha total">
+                    <span>Total</span>
+                    <span class="valor" id="total-valor">R$ 0,00</span>
+                </div>
+            </div>
+           <a href="pagamento.html" class="btn btn-checkout" id="btn-finalizar" onclick="salvarTotal()">FINALIZAR COMPRA</a>
+        </aside>
+    </div>
+</main>
+
+<script>
+    const FRETE_TAXA = 20.00; 
+
+    function updateCartCount() {
+        const cartCountElement = document.getElementById('cart-count');
+        try {
+            const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const totalItems = carrinho.reduce((sum, item) => sum + parseInt(item.quantidade || 0), 0);
+            
+            cartCountElement.textContent = totalItems;
+            cartCountElement.style.display = totalItems > 0 ? 'inline-block' : 'none'; 
+        } catch (e) {
+            cartCountElement.textContent = '0';
+            cartCountElement.style.display = 'none';
+        }
+    }
+
+    function renderizarItem(item) {
+        const itemHtml = document.createElement('div');
+        itemHtml.classList.add('item-carrinho');
+        itemHtml.setAttribute('data-id', item.id);
+        const precoUnitario = parseFloat(item.preco); 
+        itemHtml.setAttribute('data-preco-unitario', precoUnitario.toFixed(2));
+        
+        const precoTotalItem = (precoUnitario * item.quantidade).toFixed(2).replace('.', ',');
+
+        itemHtml.innerHTML = `
+            <div class="detalhes-item">
+                <h3 class="nome-item">${item.nome}</h3>
+                <p class="preco-unidade">R$ ${precoUnitario.toFixed(2).replace('.', ',')} / un</p>
+            </div>
+            
+            <div class="acoes-item">
+                <div class="controle-quantidade">
+                    <button class="qty-btn remover">-</button>
+                    <input type="text" value="${item.quantidade}" class="quantidade-input" readonly>
+                    <button class="qty-btn adicionar">+</button>
+                </div>
+                <span class="preco-total">R$ ${precoTotalItem}</span>
+                <button class="btn-remover">
+                    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+                </button>
+            </div>
+        `;
+
+        itemHtml.querySelector('.qty-btn.adicionar').addEventListener('click', () => updateQuantity(item.id, 1));
+        itemHtml.querySelector('.qty-btn.remover').addEventListener('click', () => updateQuantity(item.id, -1));
+        itemHtml.querySelector('.btn-remover').addEventListener('click', () => removeItem(item.id));
+
+        return itemHtml;
+    }
+
+    function atualizarResumo() {
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        let subtotal = 0;
+        let totalItems = 0;
+
+        carrinho.forEach(item => {
+            const preco = parseFloat(item.preco || 0);
+            const quantidade = parseInt(item.quantidade || 0);
+
+            subtotal += preco * quantidade;
+            totalItems += quantidade;
+        });
+
+        let freteCalculado = 0;
+        if (subtotal > 0) {
+            freteCalculado = FRETE_TAXA;
+        }
+        
+        const totalGeral = subtotal + freteCalculado;
+
+        document.getElementById('count-itens').textContent = totalItems;
+        document.getElementById('subtotal-valor').textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+        document.getElementById('frete-valor').textContent = `R$ ${freteCalculado.toFixed(2).replace('.', ',')}`;
+        document.getElementById('total-valor').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+
+        return totalGeral;
+    }
+
+    function carregarCarrinho() {
+        const listaItens = document.querySelector('.lista-itens');
+        listaItens.innerHTML = ''; 
+
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        
+        if (carrinho.length === 0) {
+            listaItens.innerHTML = '<p class="carrinho-vazio">Seu carrinho está vazio. Visite a página de <a href="produtos.html">Produtos</a>!</p>';
+        } else {
+            carrinho.forEach(item => {
+                listaItens.appendChild(renderizarItem(item));
+            });
+        }
+        
+        atualizarResumo();
+        updateCartCount();
+    }
+    
+    function updateQuantity(id, change) {
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        const index = carrinho.findIndex(item => item.id === id);
+
+        if (index > -1) {
+            carrinho[index].quantidade = parseInt(carrinho[index].quantidade) + change; 
+            
+            if (carrinho[index].quantidade <= 0) {
+                removeItem(id); 
+                return;
+            }
+
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            carregarCarrinho();
+        }
+    }
+
+    function removeItem(id) {
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        const novoCarrinho = carrinho.filter(item => item.id !== id);
+
+        localStorage.setItem('carrinho', JSON.stringify(novoCarrinho));
+        carregarCarrinho();
+    }
+
+    function salvarTotal() {
+        const total = atualizarResumo(); 
+        localStorage.setItem("totalCompra", total.toFixed(2));
+    }
+
+    window.onload = carregarCarrinho;
+    
+    document.getElementById("btn-finalizar").addEventListener("click", () => {
+        salvarTotal();
+        const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        localStorage.setItem("carrinhoPagamento", JSON.stringify(carrinho));
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+/* ========================================================================
+   1. VARIÁVEIS GLOBAIS E RESET
+   ======================================================================== */
+:root {
+    /* Fundo dos painéis e cores principais */
+    --roxo-principal: #e0b4ff; /* Neon Claro (Borda, Link) */
+    --roxo-escuro-transparente: rgba(30, 15, 45, 0.98); /* Fundo do Formulário MAIS ESCURO */
+    --roxo-fundo: #100818; /* Fundo Quase Preto do Body MAIS ESCURO */
+    --verde-destaque: #92e667; /* Destaque Primário (Botão de Login) */
+    --glow-roxo-suave: rgba(224, 180, 255, 0.3); /* BRILHO SUAVE (REDUZIDO) */
+    --cor-texto-claro: #f0f0f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- 2. Estilos Globais e Fundo ESCURO (Body) --- */
+body {
+    /* Fundo Efeito Nebulosa */
+    background: radial-gradient(circle at 15% 15%, #200f35 0%, var(--roxo-fundo) 100%);
+    background-attachment: fixed;
+    
+    /* FORÇA A CENTRALIZAÇÃO TOTAL NA TELA */
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center; 
+    
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    color: var(--cor-texto-claro);
+    padding: 20px; 
+}
+
+/* --- 3. Título Global (Survivors Tech) --- */
+header h1, h1 {
+    color: var(--roxo-principal);
+    margin-bottom: 50px;
+    font-size: 2.5em;
+    /* GLOW MUITO MAIS SUAVE no título principal */
+    text-shadow: 0 0 5px var(--glow-roxo-suave), 0 0 10px rgba(224, 180, 255, 0.1); 
+    text-align: center;
+}
+
+/* --- 4. Estilo do Formulário (Targetando a tag <form> diretamente) --- */
+form { 
+    background-color: var(--roxo-escuro-transparente); 
+    padding: 45px; 
+    border-radius: 15px; 
+    
+    /* BRILHO EXTERNO REDUZIDO */
+    box-shadow: 
+        0 0 5px var(--glow-roxo-suave), /* Brilho suave */
+        0 0 15px rgba(0, 0, 0, 0.5), /* Sombra para profundidade */
+        0 8px 30px rgba(0, 0, 0, 0.8); /* Sombra de Profundidade maior */
+        
+    border: 1px solid rgba(224, 180, 255, 0.5); /* Borda mais fina e semi-transparente */
+    
+    width: 100%;
+    max-width: 420px; 
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    
+    animation: fadeIn 0.7s ease-out; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Título do Formulário (Entrar na sua conta) */
+form h2 {
+    text-align: center;
+    color: var(--roxo-principal);
+    margin-bottom: 15px;
+    font-size: 2.2em;
+    /* GLOW SUAVE */
+    text-shadow: 0 0 5px var(--glow-roxo-suave); 
+}
+
+/* --- 5. Estilos dos Campos (Inputs e Labels) --- */
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--cor-texto-claro);
+    font-size: 1em; 
+}
+
+form input[type="email"],
+form input[type="password"],
+form input[type="text"] {
+    width: 100%;
+    padding: 14px; 
+    margin-bottom: 15px; 
+    background-color: #1a0d26; /* Fundo do input mais escuro */
+    color: var(--cor-texto-claro); 
+    border: 1px solid rgba(123, 67, 151, 0.5); /* Borda mais sutil */
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: all 0.3s ease-out;
+}
+
+form input:focus {
+    border-color: var(--roxo-principal); 
+    outline: none;
+    /* ANEL DE FOCO MAIS FINO E SUAVE */
+    box-shadow: 0 0 0 2px var(--roxo-principal), 0 0 10px rgba(224, 180, 255, 0.5); 
+    background-color: #200f35;
+    transform: none; 
+}
+
+/* --- 6. Estilo do Botão (Targetando <button> e <input type="submit">) - VERDE NEON --- */
+form button, 
+form input[type="submit"] { 
+    width: 100%;
+    background-color: var(--verde-destaque); 
+    color: var(--roxo-fundo);
+    padding: 15px; 
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1.2em; 
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out; 
+    margin-top: 20px;
+    box-shadow: 0 0 15px rgba(146, 230, 103, 0.5); /* Brilho Verde Suave */
+}
+
+form button:hover,
+form input[type="submit"]:hover {
+    background-color: #7bbf4c; 
+    transform: scale(1.01);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(146, 230, 103, 0.8);
+}
+
+/* --- 7. Estilo do Link de Cadastro --- */
+form p {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 1em;
+    color: #a0a0a0; 
+}
+
+form p a {
+    color: var(--roxo-principal); 
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    padding: 2px 5px; 
+}
+
+form p a:hover {
+    color: #fff; 
+    text-decoration: none;
+    background-color: rgba(224, 180, 255, 0.05); /* Fundo sutil */
+    border-radius: 4px;
+    text-shadow: 0 0 5px rgba(224, 180, 255, 0.5);
+}
+
+/* --- 8. Responsividade --- */
+@media (max-width: 480px) {
+    form {
+        padding: 30px 20px;
+        margin: 0 5px;
+    }
+    form h2 {
+        font-size: 1.8em;
+    }
+}
